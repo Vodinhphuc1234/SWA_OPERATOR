@@ -20,41 +20,41 @@ import { getInitials } from "../../utils/get-initials";
 import Router from "next/router";
 import Link from "next/link";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+export const RequestListResults = ({ requests, ...rest }) => {
+  const [selectedRequestIds, setSelectedRequestIds] = useState([]);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
 
   const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
+    let newSelectedRequestIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedRequestIds = requests.map((request) => request.id);
     } else {
-      newSelectedCustomerIds = [];
+      newSelectedRequestIds = [];
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedRequestIds(newSelectedRequestIds);
   };
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+    const selectedIndex = selectedRequestIds.indexOf(id);
+    let newSelectedRequestIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedRequestIds = newSelectedRequestIds.concat(selectedRequestIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedRequestIds = newSelectedRequestIds.concat(selectedRequestIds.slice(1));
+    } else if (selectedIndex === selectedRequestIds.length - 1) {
+      newSelectedRequestIds = newSelectedRequestIds.concat(selectedRequestIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newSelectedRequestIds = newSelectedRequestIds.concat(
+        selectedRequestIds.slice(0, selectedIndex),
+        selectedRequestIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedRequestIds(newSelectedRequestIds);
   };
 
   const handleLimitChange = (event) => {
@@ -63,7 +63,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    Router.push(`/customers?_page=${newPage + 1}&_limit=${limit}`);
+    Router.push(`/requests?_page=${newPage + 1}&_limit=${limit}`);
   };
 
   return (
@@ -75,34 +75,32 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedRequestIds.length === requests.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < customers.length
+                      selectedRequestIds.length > 0 && selectedRequestIds.length < requests.length
                     }
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Registration date</TableCell>
+                <TableCell>Request ID</TableCell>
+                <TableCell>Customer Name</TableCell>
+                <TableCell>Phne Number</TableCell>
+                <TableCell>Time Request</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {requests.slice(0, limit).map((request) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={request.id}
+                  selected={selectedRequestIds.indexOf(request.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedRequestIds.indexOf(request.id) !== -1}
+                      onChange={(event) => handleSelectOne(event, request.id)}
                       value="true"
                     />
                   </TableCell>
@@ -113,24 +111,18 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: "flex",
                       }}
                     >
-                      <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
-                        {getInitials(customer.name)}
-                      </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {request.id}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{request.customerName}</TableCell>
+                  <TableCell>{request.phoneNumber}</TableCell>
+                  <TableCell>{format(request.requestTime, "dd/MM/yyyy")}</TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>{format(1200003333, "dd/MM/yyyy")}</TableCell>
-                  <TableCell>
-                    <Link href={`customer/${customer.id}`}>
+                    <Link href={`request/${request.id}`}>
                       <Button variant="contained" color="primary">
-                        Detail
+                        Handle
                       </Button>
                     </Link>
                   </TableCell>
@@ -153,6 +145,6 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
+RequestListResults.propTypes = {
+  requests: PropTypes.array.isRequired,
 };

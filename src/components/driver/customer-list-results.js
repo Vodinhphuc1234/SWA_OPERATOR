@@ -20,41 +20,41 @@ import { getInitials } from "../../utils/get-initials";
 import Router from "next/router";
 import Link from "next/link";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+export const DriverListResults = ({ drivers, ...rest }) => {
+  const [selectedDriverIds, setSelectedDriverIds] = useState([]);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
 
   const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
+    let newSelectedDriverIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedDriverIds = drivers.map((driver) => driver.id);
     } else {
-      newSelectedCustomerIds = [];
+      newSelectedDriverIds = [];
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedDriverIds(newSelectedDriverIds);
   };
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+    const selectedIndex = selectedDriverIds.indexOf(id);
+    let newSelectedDriverIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedDriverIds = newSelectedDriverIds.concat(selectedDriverIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedDriverIds = newSelectedDriverIds.concat(selectedDriverIds.slice(1));
+    } else if (selectedIndex === selectedDriverIds.length - 1) {
+      newSelectedDriverIds = newSelectedDriverIds.concat(selectedDriverIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newSelectedDriverIds = newSelectedDriverIds.concat(
+        selectedDriverIds.slice(0, selectedIndex),
+        selectedDriverIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedDriverIds(newSelectedDriverIds);
   };
 
   const handleLimitChange = (event) => {
@@ -63,7 +63,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    Router.push(`/customers?_page=${newPage + 1}&_limit=${limit}`);
+    Router.push(`/drivers?_page=${newPage + 1}&_limit=${limit}`);
   };
 
   return (
@@ -75,11 +75,10 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedDriverIds.length === drivers.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < customers.length
+                      selectedDriverIds.length > 0 && selectedDriverIds.length < drivers.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -93,16 +92,16 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {drivers.slice(0, limit).map((driver) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={driver.id}
+                  selected={selectedDriverIds.indexOf(driver.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedDriverIds.indexOf(driver.id) !== -1}
+                      onChange={(event) => handleSelectOne(event, driver.id)}
                       value="true"
                     />
                   </TableCell>
@@ -113,22 +112,22 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: "flex",
                       }}
                     >
-                      <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
-                        {getInitials(customer.name)}
+                      <Avatar src={driver.avatarUrl} sx={{ mr: 2 }}>
+                        {getInitials(driver.name)}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {driver.name}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{driver.email}</TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {`${driver.address.city}, ${driver.address.state}, ${driver.address.country}`}
                   </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>{driver.phone}</TableCell>
                   <TableCell>{format(1200003333, "dd/MM/yyyy")}</TableCell>
                   <TableCell>
-                    <Link href={`customer/${customer.id}`}>
+                    <Link href={`driver/${driver.id}`}>
                       <Button variant="contained" color="primary">
                         Detail
                       </Button>
@@ -153,6 +152,6 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
+DriverListResults.propTypes = {
+  drivers: PropTypes.array.isRequired,
 };

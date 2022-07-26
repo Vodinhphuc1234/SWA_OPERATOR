@@ -8,12 +8,12 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { Download as DownloadIcon } from "../../icons/download";
 import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
+import { Download as DownloadIcon } from "../../icons/download";
 
-export const ProductListToolbar = (props) => (
-  <Box {...props}>
+export const RequestListToolbar = ({ handleOpenModal, ...rest }) => (
+  <Box {...rest}>
     <Box
       sx={{
         alignItems: "center",
@@ -24,7 +24,7 @@ export const ProductListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Trips
+        Requests
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button startIcon={<UploadIcon fontSize="small" />} sx={{ mr: 1 }}>
@@ -33,8 +33,8 @@ export const ProductListToolbar = (props) => (
         <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
           Export
         </Button>
-        <Button color="primary" variant="contained">
-          Add Trips
+        <Button color="primary" variant="contained" onClick={handleOpenModal}>
+          Add Requests
         </Button>
       </Box>
     </Box>
@@ -47,13 +47,13 @@ export const ProductListToolbar = (props) => (
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
+                    <SvgIcon color="action" fontSize="small">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
                 ),
               }}
-              placeholder="Search trip"
+              placeholder="Search request"
               variant="outlined"
             />
           </Box>

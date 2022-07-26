@@ -1,111 +1,95 @@
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Facebook as FacebookIcon } from '../icons/facebook';
-import { Google as GoogleIcon } from '../icons/google';
+import Head from "next/head";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Facebook as FacebookIcon } from "../icons/facebook";
+import { Google as GoogleIcon } from "../icons/google";
+import { setCookies } from "cookies-next";
+import { useDispatch } from "react-redux";
+import { setUser } from "src/slices/navSlice";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
   const router = useRouter();
-  const formik = useFormik({
-    initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123'
-    },
-    validationSchema: Yup.object({
-      email: Yup
-        .string()
-        .email(
-          'Must be a valid email')
-        .max(255)
-        .required(
-          'Email is required'),
-      password: Yup
-        .string()
-        .max(255)
-        .required(
-          'Password is required')
-    }),
-    onSubmit: () => {
-      router.push('/');
-    }
+  const dispatch = useDispatch();
+
+  //handle submit
+  const onSubmit = (user) => {
+    console.log(user);
+    setCookies("token", "authentication", { maxAge: 3000 });
+    const action = setUser({
+      isLoggedIn: true,
+      role: user.password,
+      user: {
+        email: user.email,
+      },
+    });
+    dispatch(action);
+    router.push("/");
+  };
+
+  //yup validation
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required("Username is required").email("Email must be valid"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters"),
   });
+  // use form with yup
+  const formOptions = { resolver: yupResolver(validationSchema) };
+  //get function to buld form with react hook form.
+  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { errors } = formState;
 
   return (
     <>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>Login</title>
       </Head>
       <Box
         component="main"
         sx={{
-          alignItems: 'center',
-          display: 'flex',
+          alignItems: "center",
+          display: "flex",
           flexGrow: 1,
-          minHeight: '100%'
+          minHeight: "100%",
         }}
       >
         <Container maxWidth="sm">
-          <NextLink
-            href="/"
-            passHref
-          >
-            <Button
-              component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
-            >
+          <NextLink href="/" passHref>
+            <Button component="a" startIcon={<ArrowBackIcon fontSize="small" />}>
               Dashboard
             </Button>
           </NextLink>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ my: 3 }}>
-              <Typography
-                color="textPrimary"
-                variant="h4"
-              >
+              <Typography color="textPrimary" variant="h4">
                 Sign in
               </Typography>
-              <Typography
-                color="textSecondary"
-                gutterBottom
-                variant="body2"
-              >
+              <Typography color="textSecondary" gutterBottom variant="body2">
                 Sign in on the internal platform
               </Typography>
             </Box>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
                 <Button
                   color="info"
                   fullWidth
                   startIcon={<FacebookIcon />}
-                  onClick={formik.handleSubmit}
                   size="large"
                   variant="contained"
                 >
                   Login with Facebook
                 </Button>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
+              <Grid item xs={12} md={6}>
                 <Button
                   fullWidth
                   color="error"
                   startIcon={<GoogleIcon />}
-                  onClick={formik.handleSubmit}
                   size="large"
                   variant="contained"
                 >
@@ -116,47 +100,35 @@ const Login = () => {
             <Box
               sx={{
                 pb: 1,
-                pt: 3
+                pt: 3,
               }}
             >
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
+              <Typography align="center" color="textSecondary" variant="body1">
                 or login with email address
               </Typography>
             </Box>
             <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
-              helperText={formik.touched.email && formik.errors.email}
               label="Email Address"
               margin="normal"
               name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("email")}
               type="email"
-              value={formik.values.email}
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
-              helperText={formik.touched.password && formik.errors.password}
               label="Password"
               margin="normal"
               name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("password")}
               type="password"
-              value={formik.values.password}
               variant="outlined"
             />
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
-                disabled={formik.isSubmitting}
+                disabled={formState.isSubmitting}
                 fullWidth
                 size="large"
                 type="submit"
@@ -165,21 +137,15 @@ const Login = () => {
                 Sign In Now
               </Button>
             </Box>
-            <Typography
-              color="textSecondary"
-              variant="body2"
-            >
-              Don&apos;t have an account?
-              {' '}
-              <NextLink
-                href="/register"
-              >
+            <Typography color="textSecondary" variant="body2">
+              Don&apos;t have an account?{" "}
+              <NextLink href="/register">
                 <Link
                   to="/register"
                   variant="subtitle2"
                   underline="hover"
                   sx={{
-                    cursor: 'pointer'
+                    cursor: "pointer",
                   }}
                 >
                   Sign Up

@@ -1,15 +1,14 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { CustomerListResults } from "../components/customer/customer-list-results";
-import { CustomerListToolbar } from "../components/customer/customer-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
-// import { customers } from "../__mocks__/customers";
 import getAllUsers from "src/api/getAllUser";
+import { DriverListToolbar } from "src/components/driver/customer-list-toolbar";
+import { DriverListResults } from "src/components/driver/customer-list-results";
 
-const Customers = ({ customers }) => (
+const Drivers = ({ drivers }) => (
   <>
     <Head>
-      <title>Customers | Material Kit</title>
+      <title>Drivers</title>
     </Head>
     <Box
       component="main"
@@ -19,33 +18,31 @@ const Customers = ({ customers }) => (
       }}
     >
       <Container maxWidth={false}>
-        <CustomerListToolbar />
+        <DriverListToolbar />
         <Box sx={{ mt: 3 }}>
-          <CustomerListResults customers={customers} />
+          <DriverListResults drivers={drivers} />
         </Box>
       </Container>
     </Box>
   </>
 );
-Customers.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Drivers.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export const getServerSideProps = async ({ query }) => {
   let { _page, _limit } = query;
 
-  let customers = await getAllUsers({
+  let drivers = await getAllUsers({
     params: {
       _page,
       _limit,
     },
   });
 
-  console.log(customers.data);
-
   return {
     props: {
-      customers: customers.data,
+      drivers: drivers.data,
     },
   };
 };
 
-export default Customers;
+export default Drivers;

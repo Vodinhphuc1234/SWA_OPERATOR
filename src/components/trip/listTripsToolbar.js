@@ -8,11 +8,11 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { Download as DownloadIcon } from "../../icons/download";
 import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
+import { Download as DownloadIcon } from "../../icons/download";
 
-export const ProductListToolbar = (props) => (
+export const ListTripToolbar = (props) => (
   <Box {...props}>
     <Box
       sx={{
@@ -24,7 +24,7 @@ export const ProductListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Trips
+        Upcoming Trips
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button startIcon={<UploadIcon fontSize="small" />} sx={{ mr: 1 }}>
@@ -34,7 +34,7 @@ export const ProductListToolbar = (props) => (
           Export
         </Button>
         <Button color="primary" variant="contained">
-          Add Trips
+          Add Trip
         </Button>
       </Box>
     </Box>
@@ -47,7 +47,7 @@ export const ProductListToolbar = (props) => (
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
+                    <SvgIcon color="action" fontSize="small">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
