@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const getLatLng = async (address) => {
-  console.log("process.env.NEXT_PUBLIC_HERE_MAP_API_KEY")
+  console.log(process.env.NEXT_PUBLIC_HERE_MAP_API_KEY)
   const ret = await axios.get("https://geocoder.ls.hereapi.com/6.2/geocode.json", {
     params: {
       apiKey: process.env.NEXT_PUBLIC_HERE_MAP_API_KEY,
