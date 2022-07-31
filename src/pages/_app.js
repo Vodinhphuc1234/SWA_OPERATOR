@@ -19,27 +19,22 @@ const App = (props) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <>
-      <Head>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAIOa8Mva82z34bP7OZHARsVdQP4Vn_rc&libraries=places"></script>
-      </Head>
-      <Provider store={store}>
-        <CacheProvider value={emotionCache}>
-          <Head>
-            <title>Material Kit Pro</title>
-            <meta name="viewport" content="initial-scale=1, width=device-width" />
-          </Head>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <PushNotificationLayout>
-                {getLayout(<Component {...pageProps} />)}
-              </PushNotificationLayout>
-            </ThemeProvider>
-          </LocalizationProvider>
-        </CacheProvider>
-      </Provider>
-    </>
+    <Provider store={store}>
+      <CacheProvider value={emotionCache}>
+        <Head>
+          <title>Material Kit Pro</title>
+          <meta name="viewport" content="initial-scale=1, width=device-width" />
+        </Head>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <PushNotificationLayout>
+              {getLayout(<Component {...pageProps} />)}
+            </PushNotificationLayout>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </CacheProvider>
+    </Provider>
   );
 };
 
