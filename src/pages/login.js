@@ -19,7 +19,7 @@ const Login = () => {
   //handle submit
   const onSubmit = (user) => {
     console.log(user);
-    setCookies("token", "authentication", { maxAge: 3000 });
+    setCookies("token", "authentication", { maxAge: 3000, sameSite: "none" });
     const action = setUser({
       isLoggedIn: true,
       role: user.password,
