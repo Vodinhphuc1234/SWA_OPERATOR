@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { getMessagingToken, onMessageListener } from "src/utils/firebase";
-import { ToastContainer, toast } from "react-toastify";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
+import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
+import {
+  Box, Grid,
+  IconButton,
+  Typography
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { getMessagingToken } from "src/utils/firebase";
 import AddRequestModal from "../requests/modals/add-resquest-modal";
 
 function PushNotificationLayout({ children }) {

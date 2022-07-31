@@ -19,15 +19,16 @@ const Login = () => {
   //handle submit
   const onSubmit = (user) => {
     console.log(user);
-    setCookies("token", "authentication", { maxAge: 3000, sameSite: "none" });
-    // const action = setUser({
-    //   isLoggedIn: true,
-    //   role: user.password,
-    //   user: {
-    //     email: user.email,
-    //   },
-    // });
-    // dispatch(action);
+    setCookies("token", "authentication", { maxAge: 3000});
+    const action = setUser({
+      isLoggedIn: true,
+      role: user.password,
+      user: {
+        email: user.email,
+      },
+    });
+    dispatch(action);
+    console.log("this")
     router.push("/");
   };
 
@@ -43,6 +44,7 @@ const Login = () => {
   //get function to buld form with react hook form.
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
+  console.log(errors);
 
   return (
     <>
