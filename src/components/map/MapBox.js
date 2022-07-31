@@ -1,6 +1,5 @@
-import { faLocation, faMapPin } from "@fortawesome/free-solid-svg-icons";
+import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ConstructionOutlined } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import ReactMapGL, { Layer, Marker, Source } from "react-map-gl";
 import getDistanceAndDuration from "src/utils/getDistanceAndDuration";
