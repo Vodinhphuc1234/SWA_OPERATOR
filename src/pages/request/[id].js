@@ -140,8 +140,8 @@ const RequestDetail = ({}) => {
                           <Alert severity="error">
                             <AlertTitle>Error</AlertTitle>
 
-                            {Object.keys(errors).map((key) => (
-                              <Typography variant="p" component="div">
+                            {Object.keys(errors).map((key, i) => (
+                              <Typography variant="p" component="div" key={i}>
                                 {errors[key].message}
                               </Typography>
                             ))}
