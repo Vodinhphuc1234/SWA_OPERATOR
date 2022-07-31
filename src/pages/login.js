@@ -20,14 +20,14 @@ const Login = () => {
   const onSubmit = (user) => {
     console.log(user);
     setCookies("token", "authentication", { maxAge: 3000, sameSite: "none" });
-    const action = setUser({
-      isLoggedIn: true,
-      role: user.password,
-      user: {
-        email: user.email,
-      },
-    });
-    dispatch(action);
+    // const action = setUser({
+    //   isLoggedIn: true,
+    //   role: user.password,
+    //   user: {
+    //     email: user.email,
+    //   },
+    // });
+    // dispatch(action);
     router.push("/");
   };
 
