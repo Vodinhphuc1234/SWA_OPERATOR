@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@mui/material";
 import Router from "next/router";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 
 export const ListTrips = ({ trips, onClick, ...rest }) => {
   const [limit, setLimit] = useState(5);

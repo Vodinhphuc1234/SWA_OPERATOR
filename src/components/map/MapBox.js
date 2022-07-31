@@ -1,11 +1,14 @@
 import { faLocation, faMapPin } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ConstructionOutlined } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Layer, Marker, Source } from "react-map-gl";
 import getDistanceAndDuration from "src/utils/getDistanceAndDuration";
+import getGeometies from "src/utils/getGeometries";
 import getLocationName from "src/utils/getLocationName";
 
 const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setDestination }) => {
+  const [dataOne, setDataOne] = useState();
   const mapRef = useRef();
   const [viewport, setViewport] = useState({
     width: "100vw",
@@ -19,8 +22,8 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
     if (origin && destination) {
       mapRef?.current?.fitBounds(
         [
-          [origin.coordinates.lng, origin.coordinates.lat],
           [destination.coordinates.lng, destination.coordinates.lat],
+          [origin.coordinates.lng, origin.coordinates.lat],
         ],
         { padding: 40, duration: 1000 }
       );
@@ -29,6 +32,18 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
         origin.coordinates,
         destination.coordinates
       );
+
+      const geometries = await getGeometies(origin.coordinates, destination.coordinates);
+
+      setDataOne({
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: [...geometries.coordinates],
+        },
+      });
+
       setDistance((durationAndDisTance.length / 1000).toFixed(2) + " km");
       setDuration((durationAndDisTance.duration / 60).toFixed(2) + " mins");
     }
@@ -58,8 +73,8 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
     if (origin && destination) {
       mapRef?.current?.fitBounds(
         [
-          [origin.coordinates.lng, origin.coordinates.lat],
           [destination.coordinates.lng, destination.coordinates.lat],
+          [origin.coordinates.lng, origin.coordinates.lat],
         ],
         { padding: 40, duration: 1000 }
       );
@@ -68,6 +83,20 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
           origin.coordinates,
           destination.coordinates
         );
+
+        const geometries = await getGeometies(origin.coordinates, destination.coordinates);
+
+        console.log(geometries);
+
+        setDataOne({
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: [...geometries.coordinates],
+          },
+        });
+
         setDistance((durationAndDisTance.length / 1000).toFixed(2) + " km");
         setDuration((durationAndDisTance.duration / 60).toFixed(2) + " mins");
       };
@@ -92,7 +121,7 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
           draggable
           onDragEnd={handleDragOriginEnd}
         >
-          <FontAwesomeIcon icon={faMapPin} size="2xl" color="red" title={origin.description} />
+          <FontAwesomeIcon icon={faMapPin} size="2xl" color="green" title={origin.description} />
         </Marker>
       )}
       {destination && (
@@ -109,6 +138,24 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
             title={destination.description}
           />
         </Marker>
+      )}
+
+      {origin && destination && (
+        <Source id="polylineLayer" type="geojson" data={dataOne}>
+          <Layer
+            id="lineLayer"
+            type="line"
+            source="my-data"
+            layout={{
+              "line-join": "round",
+              "line-cap": "round",
+            }}
+            paint={{
+              "line-color": "red",
+              "line-width": 2,
+            }}
+          />
+        </Source>
       )}
     </ReactMapGL>
   );

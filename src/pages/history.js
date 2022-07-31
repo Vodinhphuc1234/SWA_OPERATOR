@@ -18,128 +18,112 @@ const gpsRequests = [
     customerName: "Jonh Wick",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
+    amountTime: "16 mins"
   },
   {
     id: 2,
     customerName: "Cristino Ronaldo",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 3,
     customerName: "Lionel Messi",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 4,
     customerName: "Neymar Juniors",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 5,
     customerName: "Jonh Wick",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
+    amountTime: "16 mins"
   },
   {
     id: 6,
     customerName: "Cristino Ronaldo",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 7,
     customerName: "Lionel Messi",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 8,
     customerName: "Neymar Juniors",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 9,
     customerName: "Jonh Wick",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
+    amountTime: "16 mins"
   },
   {
     id: 10,
     customerName: "Cristino Ronaldo",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 11,
     customerName: "Lionel Messi",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 12,
     customerName: "Neymar Juniors",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 13,
     customerName: "Jonh Wick",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
+    amountTime: "16 mins"
   },
   {
     id: 14,
     customerName: "Cristino Ronaldo",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 15,
     customerName: "Lionel Messi",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
   {
     id: 16,
     customerName: "Neymar Juniors",
     phoneNumber: "0123456789",
     requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
+    amountTime: "16 mins"
   },
 ];
 
@@ -173,17 +157,9 @@ const Requests = ({ customers }) => {
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "origin",
-      headerName: "Origin Location",
-      // valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
-      flex: 10,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "destination",
-      headerName: "Destination",
-      // valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
-      flex: 10,
+      field: "amountTime",
+      headerName: "Amount Time",
+      flex: 5,
       headerClassName: "super-app-theme--header",
     },
     {
@@ -195,51 +171,6 @@ const Requests = ({ customers }) => {
         return (
           <IconButton sx={{ borderStyle: "solid", borderWidth: "1px", borderColor: "green" }}>
             <PhoneEnabled sx={{ color: "green" }} />
-          </IconButton>
-        );
-      },
-    },
-    {
-      flex: 2,
-      field: "that",
-      headerName: "Reject",
-      headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
-        const onClick = async () => {
-          //get ret
-          const originLatLng = await getLatLng(params.row.origin);
-          const destinationLatLng = await getLatLng(params.row.destination);
-
-          setSelectedGPSRequest({
-            id: params.row.id,
-            customerName: params.row.customerName,
-            phoneNumber: params.row.phoneNumber,
-            origin: {
-              description: params.row.origin,
-              coordinates: {
-                lat: originLatLng.Latitude,
-                lng: originLatLng.Longitude,
-              },
-            },
-
-            destination: {
-              description: params.row.destination,
-              coordinates: {
-                lat: destinationLatLng.Latitude,
-                lng: destinationLatLng.Longitude,
-              },
-            },
-          });
-          setOpenGPSModal(true);
-        };
-        return (
-          <IconButton
-            sx={{ borderStyle: "solid", borderWidth: "1px", borderColor: "blue" }}
-            onClick={async () => {
-              await onClick();
-            }}
-          >
-            <PersonPinCircleIcon sx={{ color: "blue" }} />
           </IconButton>
         );
       },

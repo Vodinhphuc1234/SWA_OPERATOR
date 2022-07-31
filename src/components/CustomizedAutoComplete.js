@@ -1,3 +1,4 @@
+import { letterSpacing } from "@mui/system";
 import { getAddressFromLocationId } from "src/utils/getAddressFromLocationId";
 
 const { Autocomplete, TextField } = require("@mui/material");
@@ -5,15 +6,12 @@ const { useState, useRef, useCallback, useEffect } = require("react");
 const { getPlaceSuggests } = require("src/utils/getPlaceSuggestions");
 
 const CustomizedAutoComplete = ({ label, setLocation, location }) => {
-  console.log(location);
   const timer = useRef();
   const [currentState, setCurrentState] = useState({
     loading: false,
     suggestions: [],
   });
-
-  const inputRef = useRef();
-
+  console.log(currentState.suggestions);
   const handleSelectItem = async (e, value) => {
     console.log(value);
     if (value) {
@@ -28,51 +26,42 @@ const CustomizedAutoComplete = ({ label, setLocation, location }) => {
     }
   };
 
-  const getSuggestions = useCallback(async (q) => {
-    setCurrentState((prevState) => ({
-      ...prevState,
+  const getSuggestions = async (q) => {
+    setCurrentState({
       loading: true,
-    }));
-    const data = await getPlaceSuggests(q);
-
-    let suggestions = [];
-    data?.suggestions?.forEach((suggestion) => {
-      suggestions.push({
-        id: suggestion.locationId,
-        label: `${suggestion.address.houseNumber ? suggestion.address.houseNumber + " " : ""}${
-          suggestion.address.street ? suggestion.address.street + ", " : ""
-        }${suggestion.address.district ? suggestion.address.district + ", " : ""}${
-          suggestion.address.county ? suggestion.address.county + ", " : ""
-        }${suggestion.address.country}`,
-        locationId: suggestion.locationId,
-      });
-      console.log("this");
+      suggestions: [],
     });
+    let data = await getPlaceSuggests(q);
 
-    console.log(suggestions);
-
-    setCurrentState(() => ({
-      suggestions: [...suggestions],
+    setCurrentState({
+      suggestions: [...data],
       loading: false,
-    }));
-    console.log(suggestions);
-  }, []);
+    });
+  };
 
   return (
     <Autocomplete
+      filterOptions={(option) => option}
+      defaultValue={location.description}
       disablePortal
-      id="combo-box-demo"
       options={currentState.suggestions}
       onChange={handleSelectItem}
       sx={{ width: "100%" }}
       onInputChange={(e) => {
         clearTimeout(timer.current);
         timer.current = setTimeout(() => {
-          if (e.target.value == "") {
+          if (e?.target?.value == "") {
             return;
           }
-          getSuggestions(e.target.value);
+          e && getSuggestions(e.target.value);
         }, 500);
+      }}
+      renderOption={(props, option) => {
+        return (
+          <li {...props} key={option.id}>
+            {option.label}
+          </li>
+        );
       }}
       renderInput={(params) => <TextField {...params} label={label} />}
       loading={currentState.loading}

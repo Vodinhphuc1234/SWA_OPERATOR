@@ -23,7 +23,6 @@ const App = (props) => {
       <Head>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAIOa8Mva82z34bP7OZHARsVdQP4Vn_rc&libraries=places"></script>
       </Head>
-
       <Provider store={store}>
         <CacheProvider value={emotionCache}>
           <Head>

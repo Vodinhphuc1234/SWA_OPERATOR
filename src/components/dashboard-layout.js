@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import Head from "next/head";
+import NextNProgress from "nextjs-progressbar";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -21,9 +22,7 @@ export const DashboardLayout = (props) => {
 
   return (
     <>
-      <Head>
-        
-      </Head>
+      <NextNProgress />
       <DashboardLayoutRoot>
         <Box
           sx={{

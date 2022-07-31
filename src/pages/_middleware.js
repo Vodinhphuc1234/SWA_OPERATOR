@@ -6,9 +6,9 @@ export default function middleware(req) {
     if (token) {
       return NextResponse.next();
     }
-    return NextResponse.redirect("http://127.0.0.1:3001/login");
+    return NextResponse.redirect("https://swa-operator.vercel.app/login");
   } else if (req.cookies.token) {
-    return NextResponse.redirect("http://127.0.0.1:3001/localhost:3000");
+    return NextResponse.redirect("https://swa-operator.vercel.app/");
   }
   return NextResponse.next();
 }

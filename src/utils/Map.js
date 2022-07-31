@@ -5,8 +5,8 @@ import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { GOOGLE_MAP_API } from "@env";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react/cjs/react.development";
-import { useRef } from "react/cjs/react.development";
+import { useEffect } from "react";
+import { useRef } from "react";
 import {
   selectDestination,
   selectOrigin,
