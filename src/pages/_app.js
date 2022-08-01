@@ -16,15 +16,16 @@ const clientSideEmotionCache = createEmotionCache();
 
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <Provider store={store}>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <title>Material Kit Pro</title>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <title>Callcenter Operator</title>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      <Provider store={store}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -33,8 +34,8 @@ const App = (props) => {
             </PushNotificationLayout>
           </ThemeProvider>
         </LocalizationProvider>
-      </CacheProvider>
-    </Provider>
+      </Provider>
+    </CacheProvider>
   );
 };
 
