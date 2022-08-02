@@ -1,41 +1,16 @@
-import Head from "next/head";
 import { Box, Container, Grid } from "@mui/material";
-import { Budget } from "../components/dashboard/budget";
-import { LatestOrders } from "../components/dashboard/latest-orders";
-import { LatestProducts } from "../components/dashboard/latest-products";
-import { Sales } from "../components/dashboard/sales";
-import { TasksProgress } from "../components/dashboard/tasks-progress";
-import { TotalCustomers } from "../components/dashboard/total-customers";
-import { TotalProfit } from "../components/dashboard/total-profit";
-import { TrafficByDevice } from "../components/dashboard/traffic-by-device";
-import { DashboardLayout } from "../components/dashboard-layout";
-import getLatLng from "src/utils/geoLatLngFromAddress";
-import { useEffect } from "react";
-
+import Head from "next/head";
+import { DashboardLayout } from "src/components/dashboard-layout";
+import { Budget } from "src/components/dashboard/budget";
+import { LatestOrders } from "src/components/dashboard/latest-orders";
+import { LatestProducts } from "src/components/dashboard/latest-products";
+import { Sales } from "src/components/dashboard/sales";
+import { TasksProgress } from "src/components/dashboard/tasks-progress";
+import { TotalCustomers } from "src/components/dashboard/total-customers";
+import { TotalProfit } from "src/components/dashboard/total-profit";
+import { TrafficByDevice } from "src/components/dashboard/traffic-by-device";
 
 const Dashboard = () => {
-  // const user = useSelector((state) => state.user);
-  // if (DASHBOARD.includes(user.role)) {
-  // useEffect(() => {
-  // console.log("hello")
-  // // Calls the getMessage() function if the token is there
-  // const setToken = async () => {
-  //   try {
-  //     const token = await getMessagingToken();
-  //     if (token) {
-  //       console.log("token", token);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  // setToken();
-  // });
-
-
-  // getAddress({ lat: 10.0888, lng: 108.02314565 });
-
-  
   return (
     <>
       <Head>
@@ -79,9 +54,6 @@ const Dashboard = () => {
       </Box>
     </>
   );
-  // } else {
-  //   return <NoPermisson />;
-  // }
 };
 
 Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
