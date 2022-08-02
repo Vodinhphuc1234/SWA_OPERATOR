@@ -29,9 +29,9 @@ const App = (props) => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {/* <PushNotificationLayout> */}
+            <PushNotificationLayout>
               {getLayout(<Component {...pageProps} />)}
-            {/* </PushNotificationLayout> */}
+            </PushNotificationLayout>
           </ThemeProvider>
         </LocalizationProvider>
       </Provider>
