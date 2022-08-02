@@ -34,7 +34,7 @@ const Login = () => {
     dispatch(action);
     console.log("this");
 
-    router.push("/");
+    window.location.href = "/"
     setLogging(false);
   };
 
