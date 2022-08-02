@@ -12,10 +12,10 @@ export default function middleware(req) {
       return NextResponse.next();
     }
     console.log("not pass");
-    return NextResponse.rewrite(new URL(redirect + "/login", req.url));
+    return NextResponse.redirect(redirect + "/login");
   } else if (req.cookies.token) {
     console.log("pass");
-    return NextResponse.rewrite(new URL(redirect, req.url));
+    return NextResponse.redirect(redirect);
   }
   console.log("login");
   return NextResponse.next();
