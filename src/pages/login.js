@@ -1,24 +1,28 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { LoadingButton } from "@mui/lab";
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material";
+import { setCookies } from "cookies-next";
 import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Facebook as FacebookIcon } from "../icons/facebook";
-import { Google as GoogleIcon } from "../icons/google";
-import { setCookies } from "cookies-next";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { setUser } from "src/slices/navSlice";
 import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { Facebook as FacebookIcon } from "../icons/facebook";
+import { Google as GoogleIcon } from "../icons/google";
 
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [logging, setLogging] = useState(false);
 
   //handle submit
   const onSubmit = (user) => {
     console.log(user);
+    setLogging(true);
     setCookies("token", "authentication", { maxAge: 3000 });
     const action = setUser({
       isLoggedIn: true,
@@ -29,7 +33,9 @@ const Login = () => {
     });
     dispatch(action);
     console.log("this");
+
     router.push("/");
+    setLogging(false);
   };
 
   //yup validation
@@ -128,7 +134,8 @@ const Login = () => {
             variant="outlined"
           />
           <Box sx={{ py: 2 }}>
-            <Button
+            <LoadingButton
+              loading={logging}
               color="primary"
               disabled={formState.isSubmitting}
               fullWidth
@@ -138,7 +145,7 @@ const Login = () => {
               onClick={handleSubmit(onSubmit)}
             >
               Sign In Now
-            </Button>
+            </LoadingButton>
           </Box>
           <Typography color="textSecondary" variant="body2">
             Don&apos;t have an account?{" "}
