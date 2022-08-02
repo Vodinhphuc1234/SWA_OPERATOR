@@ -15,5 +15,5 @@ export default function middleware(req) {
     return NextResponse.redirect(redirect);
   }
   console.log("login");
-  return NextResponse.next();
+  return NextResponse.next()
 }
