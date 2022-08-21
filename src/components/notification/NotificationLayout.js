@@ -1,10 +1,7 @@
+import { Add, AddCircleOutline } from "@mui/icons-material";
 import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
-import {
-  Box, Grid,
-  IconButton,
-  Typography
-} from "@mui/material";
+import { Box, Fab, Grid, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { getMessagingToken } from "src/utils/firebase";
@@ -100,8 +97,24 @@ function PushNotificationLayout({ children }) {
         draggable
         pauseOnHover
       />
-      <AddRequestModal openModal={openModal} handleCloseModal={handleCloseModal} phoneNumber={phoneNumber} />
+      <AddRequestModal
+        openModal={openModal}
+        handleCloseModal={handleCloseModal}
+        phoneNumber={phoneNumber}
+      />
       {children}
+
+      <Fab
+        draggable={true}
+        color="primary"
+        aria-label="add"
+        sx={{ position: "fixed", bottom: "20%", right: 20 }}
+        onClick={() => {
+          setOpenModal(true);
+        }}
+      >
+        <Add />
+      </Fab>
     </>
   );
 }

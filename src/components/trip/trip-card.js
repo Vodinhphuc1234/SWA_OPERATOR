@@ -1,9 +1,17 @@
-import PropTypes from "prop-types";
-import { Avatar, Box, Button, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
-import { Clock as ClockIcon } from "../../icons/clock";
-import TripOriginIcon from "@mui/icons-material/TripOrigin";
+import { CarRentalSharp, Person } from "@mui/icons-material";
 import CircleIcon from "@mui/icons-material/Circle";
 import SyncIcon from "@mui/icons-material/Sync";
+import TripOriginIcon from "@mui/icons-material/TripOrigin";
+import { Box, Button, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+
+const color = {
+  canceled: "red",
+  processing: "#EFF54B",
+  complete: "green",
+  canceled_by_driver: "red",
+  pick_up: "blue",
+};
 
 export const TripCard = ({ trip, ...rest }) => (
   <Card
@@ -15,43 +23,37 @@ export const TripCard = ({ trip, ...rest }) => (
     {...rest}
   >
     <CardContent sx={{ py: "10px", flexGrow: 1, display: "flex", flexDirection: "column" }}>
-      <Grid container sx={{ justifyContent: "space-between" }} spacing={2}>
-        <Grid item lg={6} md={6} xs={6}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pb: 1,
-            }}
-          >
-            <Avatar alt="Trip" src={trip.media} variant="square" />
-          </Box>
-          <Typography align="center" color="textPrimary" gutterBottom variant="h6">
-            {trip.title}
-          </Typography>
+      <Box sx={{ flexGrow: 1 }} />
+      <Grid container>
+        <Grid item lg={1} md={1} xs={1}>
+          <CarRentalSharp fontSize="small" />
         </Grid>
-        <Grid item lg={6} md={6} xs={6}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pb: 1,
-            }}
-          >
-            <Avatar alt="Trip" src={trip.media} variant="square" />
-          </Box>
-          <Typography align="center" color="textPrimary" gutterBottom variant="h6">
-            {trip.title}
+        <Grid item lg={11} md={11} xs={11}>
+          <Typography fontSize="small" fontWeight="bold">
+            {trip?.driver_name}
           </Typography>
         </Grid>
       </Grid>
-      <Box sx={{ flexGrow: 1 }} />
+
+      <Grid container>
+        <Grid item lg={1} md={1} xs={1}>
+          <Person fontSize="small" />
+        </Grid>
+        <Grid item lg={11} md={11} xs={11}>
+          <Typography fontSize="small" fontWeight="bold">
+            {trip?.rider_name}
+          </Typography>
+        </Grid>
+      </Grid>
+
+      <Divider sx={{ marginY: 2, color: "black" }} />
+
       <Grid container>
         <Grid item lg={1} md={1} xs={1}>
           <TripOriginIcon fontSize="small" />
         </Grid>
         <Grid item lg={11} md={11} xs={11}>
-          <Typography fontSize="small">Bui Dinh Tuy</Typography>
+          <Typography fontSize="small">{trip.pick_up_address_line}</Typography>
         </Grid>
       </Grid>
       <Grid container>
@@ -59,7 +61,7 @@ export const TripCard = ({ trip, ...rest }) => (
           <CircleIcon fontSize="small" />
         </Grid>
         <Grid item lg={11} md={11} xs={11}>
-          <Typography fontSize="small">Bui Dinh Tuy</Typography>
+          <Typography fontSize="small">{trip.drop_off_address_line}</Typography>
         </Grid>
       </Grid>
     </CardContent>
@@ -75,32 +77,38 @@ export const TripCard = ({ trip, ...rest }) => (
           }}
         >
           <Typography
-            color="red"
+            color="white"
             display="inline"
             sx={{
               borderStyle: "solid",
-              borderColor: "red",
+              backgroundColor: color[trip.status],
               borderWidth: "1px",
               py: "1px",
               px: "3px",
               borderRadius: "20px",
+              fontSize: 12,
+              paddingX: 1,
+              fontWeight: "500",
             }}
             variant="body2"
           >
-            Driver Cancle 
+            {trip.status}
           </Typography>
         </Grid>
-        <Grid
-          item
-          sx={{
-            alignItems: "center",
-            display: "flex",
-          }}
-        >
-          <Button sx={{ color: "green" }} startIcon={<SyncIcon />}>
-            Rollback
-          </Button>
-        </Grid>
+
+        {trip?.status == "canceled_by_driver" && (
+          <Grid
+            item
+            sx={{
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <Button sx={{ color: "green" }} startIcon={<SyncIcon />}>
+              Rollback
+            </Button>
+          </Grid>
+        )}
       </Grid>
     </Box>
   </Card>

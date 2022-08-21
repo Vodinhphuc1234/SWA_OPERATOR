@@ -1,55 +1,29 @@
-const {
-  Modal,
+import { yupResolver } from "@hookform/resolvers/yup";
+import AddLocationIcon from "@mui/icons-material/AddLocation";
+import DoNotDisturbOnSharpIcon from "@mui/icons-material/DoNotDisturbOnSharp";
+import { LoadingButton } from "@mui/lab";
+import {
   Box,
-  Typography,
-  TextField,
-  Divider,
-  IconButton,
-  Button,
-  Grid,
   Card,
+  Divider,
+  Grid,
+  IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
-  Select,
+  ListItemText,
   MenuItem,
-} = require("@mui/material");
-import { yupResolver } from "@hookform/resolvers/yup";
-import DoNotDisturbOnSharpIcon from "@mui/icons-material/DoNotDisturbOnSharp";
-import { format } from "date-fns";
+  Modal,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import addTrip from "src/api/trip/addTrip";
 import * as Yup from "yup";
-import AddLocationIcon from "@mui/icons-material/AddLocation";
-
-const lastestCalls = [
-  {
-    phoneNumber: "0123456799",
-    time: "12345678",
-  },
-  {
-    phoneNumber: "0123456799",
-    time: "12345678",
-  },
-  {
-    phoneNumber: "0123456799",
-    time: "12345678",
-  },
-  {
-    phoneNumber: "0123456799",
-    time: "12345678",
-  },
-  {
-    phoneNumber: "0123456799",
-    time: "12345678",
-  },
-];
 
 const mostAddresses = [
-  {
-    address: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    distance: "10km",
-  },
   {
     address: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
     distance: "10km",
@@ -75,23 +49,48 @@ const mostAddresses = [
 const AddRequestModal = ({ openModal, handleCloseModal, phoneNumber, ...rest }) => {
   //yup validation
   const validationSchema = Yup.object().shape({
-    customerName: Yup.string().required("Customer Name is required"),
-    phoneNumber: Yup.string().required("Phone Number is required"),
+    rider_name: Yup.string().required("* Customer Name is required"),
+    rider_email: Yup.string().required("* Email is required").email("Email is invalid"),
+    rider_phone_number: Yup.string()
+      .required("* Phone Number is required")
+      .length(10, "Length of phonenumber is 10"),
+    pick_up_address_line: Yup.string().required("Origin is required"),
+    drop_off_address_line: Yup.string().required("Destination is required"),
+    car_type: Yup.string().required("* Car Type is re quired"),
+    payment_method: Yup.string().required("* Payment method is re quired"),
+    note: Yup.string().required("* Note method is re quired"),
   });
 
   //yup validation with for
-  const formOptions = { resolver: yupResolver(validationSchema) };
+  const formOptions = { resolver: yupResolver(validationSchema), mode: "onchange" };
 
   //user form;
   const { register, handleSubmit, formState } = useForm(formOptions);
 
   const { errors } = formState;
 
+  //state
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
   //submit
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
-    data = null;
-    handleCloseModal();
+    setLoading(true);
+    const ret = await addTrip({
+      ...data,
+      rider_phone_number: data.rider_phone_number.replace("0", "+84"),
+    });
+    setLoading(false);
+    if (ret == null) {
+      setMessage("Check your network connection.");
+    } else {
+      if (ret?.data?.message) {
+        setMessage(ret.data.message);
+      } else {
+        handleCloseModal();
+      }
+    }
   };
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
@@ -119,18 +118,6 @@ const AddRequestModal = ({ openModal, handleCloseModal, phoneNumber, ...rest }) 
               alignItems: "center",
             }}
           >
-            <Select
-              label="Type"
-              name="type"
-              
-              {...register("type")}
-              labelId="demo-select-small"
-              id="demo-select-small"
-            >
-              <MenuItem value={1}>4 seats</MenuItem>
-              <MenuItem value={2}>7 seats</MenuItem>
-              <MenuItem value={3}>10 seats</MenuItem>
-            </Select>
             <Typography variant="h5" sx={{ textAlign: "center", flexGrow: 1 }}>
               Add Request
             </Typography>
@@ -155,75 +142,159 @@ const AddRequestModal = ({ openModal, handleCloseModal, phoneNumber, ...rest }) 
                 flexGrow: 1,
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "space-between",
               }}
             >
               <Grid container spacing={1}>
-                <Grid item lg={6} md={6} xs={12}>
+                <Grid item lg={12} md={12} xs={12}>
+                  {errors["rider_name"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["rider_name"].message}
+                    </Typography>
+                  )}
                   <TextField
                     label="Customer name"
                     fullWidth
                     sx={{
                       mb: "20px",
                     }}
-                    name="customerName"
-                    {...register("customerName")}
-                  />
-                </Grid>
-                <Grid item lg={6} md={6} xs={12}>
-                  <TextField
-                    defaultValue={phoneNumber}
-                    label="Phone number"
-                    fullWidth
-                    name="phoneNumber"
-                    {...register("phoneNumber")}
+                    name="rider_name"
+                    {...register("rider_name")}
                   />
                 </Grid>
               </Grid>
               <Grid container spacing={1}>
                 <Grid item lg={6} md={6} xs={12}>
+                  {errors["rider_email"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["rider_email"].message}
+                    </Typography>
+                  )}
+                  <TextField
+                    label="Email"
+                    fullWidth
+                    sx={{
+                      mb: "20px",
+                    }}
+                    name="rider_email"
+                    {...register("rider_email")}
+                  />
+                </Grid>
+                <Grid item lg={6} md={6} xs={12}>
+                  {errors["rider_phone_number"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["rider_phone_number"].message}
+                    </Typography>
+                  )}
+                  <TextField
+                    defaultValue={phoneNumber}
+                    label="Phone number"
+                    fullWidth
+                    name="rider_phone_number"
+                    {...register("rider_phone_number")}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1} marginBottom={2}>
+                <Grid item lg={6} md={6} xs={12}>
+                  {errors["car_type"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["car_type"].message}
+                    </Typography>
+                  )}
+                  <Select
+                    label="Car Type"
+                    name="car_type"
+                    {...register("car_type")}
+                    labelId="demo-select-small"
+                    id="demo-select-small"
+                    placeholder="Car Type"
+                    sx={{ width: "100%" }}
+                  >
+                    <MenuItem selected value="four_seats">
+                      4 seats
+                    </MenuItem>
+                    <MenuItem value="six_seats">6 seats</MenuItem>
+                  </Select>
+                </Grid>
+                <Grid item lg={6} md={6} xs={12}>
+                  {errors["payment_method"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["payment_method"].message}
+                    </Typography>
+                  )}
+                  <Select
+                    label="Payment Method"
+                    name="payment_method"
+                    {...register("payment_method")}
+                    labelId="demo-select-small"
+                    id="demo-select-small"
+                    placeholder="Payment Method"
+                    sx={{ width: "100%" }}
+                  >
+                    <MenuItem selected value="cash">
+                      Cash
+                    </MenuItem>
+                    <MenuItem value="momo">Momo</MenuItem>
+                    <MenuItem value="payoo">Payoo</MenuItem>
+                    <MenuItem value="visa">Visa</MenuItem>
+                  </Select>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
+                <Grid item lg={6} md={6} xs={12}>
+                  {errors["pick_up_address_line"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["pick_up_address_line"].message}
+                    </Typography>
+                  )}
                   <TextField
                     label="Origin"
                     fullWidth
                     sx={{
                       mb: "20px",
                     }}
-                    name="origin"
-                    {...register("origin")}
+                    name="pick_up_address_line"
+                    {...register("pick_up_address_line")}
                   />
                 </Grid>
                 <Grid item lg={6} md={6} xs={12}>
+                  {errors["drop_off_address_line"] && (
+                    <Typography sx={{ fontSize: 12 }} color="red">
+                      {errors["drop_off_address_line"].message}
+                    </Typography>
+                  )}
                   <TextField
                     label="Destination"
                     fullWidth
-                    name="destination"
-                    {...register("destination")}
+                    name="drop_off_address_line"
+                    {...register("drop_off_address_line")}
                   />
                 </Grid>
               </Grid>
+
+              <Grid container spacing={1}>
+                {errors["note"] && (
+                  <Typography sx={{ fontSize: 12 }} color="red">
+                    {errors["note"].message}
+                  </Typography>
+                )}
+                <TextField
+                  label="Note"
+                  fullWidth
+                  sx={{
+                    mb: "20px",
+                  }}
+                  name="Note"
+                  {...register("note")}
+                />
+              </Grid>
               <Divider />
 
-              <Typography variant="h6" textAlign="center">
-                History
-              </Typography>
               <Grid container spacing={1}>
-                <Grid item lg={4} md={4} xs={12}>
-                  <Card>
-                    <List>
-                      {lastestCalls.map((call, i) => (
-                        <ListItem divider={i < lastestCalls.length - 1} key={i}>
-                          <ListItemText
-                            primary={call.phoneNumber}
-                            secondary={`Requested at ${format(1234, "dd/MM/yyyy")}`}
-                          />
-
-                          <Divider />
-                        </ListItem>
-                      ))}
-                    </List>
-                    <Divider />
-                  </Card>
-                </Grid>
-                <Grid item lg={8} md={8} xs={12}>
+                <Grid item lg={12} md={12} xs={12}>
                   <Card>
                     <List>
                       {mostAddresses.map((item, i) => (
@@ -247,9 +318,23 @@ const AddRequestModal = ({ openModal, handleCloseModal, phoneNumber, ...rest }) 
             </Box>
 
             <Box mt={1}>
-              <Button type="submit" variant="contained" fullWidth color="primary">
+              <LoadingButton
+                disabled={loading}
+                loading={loading}
+                type="submit"
+                variant="contained"
+                fullWidth
+                color="primary"
+                onClick={handleSubmit(onSubmit)}
+              >
                 Add Request
-              </Button>
+              </LoadingButton>
+
+              {message && (
+                <Typography sx={{ marginTop: 2 }} textAlign="center" color="red">
+                  {message}
+                </Typography>
+              )}
             </Box>
           </Box>
         </Box>

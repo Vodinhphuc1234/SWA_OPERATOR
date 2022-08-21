@@ -39,6 +39,13 @@ const CustomizedAutoComplete = ({ label, setLocation, location }) => {
     });
   };
 
+  //handle input
+  const [inputValue, setInputValue] = useState(location.description);
+
+  useEffect(() => {
+    setInputValue(location.description);
+  }, [location]);
+
   return (
     <Autocomplete
       filterOptions={(option) => option}
@@ -47,7 +54,9 @@ const CustomizedAutoComplete = ({ label, setLocation, location }) => {
       options={currentState.suggestions}
       onChange={handleSelectItem}
       sx={{ width: "100%" }}
+      inputValue={inputValue}
       onInputChange={(e) => {
+        setInputValue(e?.target.value);
         clearTimeout(timer.current);
         timer.current = setTimeout(() => {
           if (e?.target?.value == "") {

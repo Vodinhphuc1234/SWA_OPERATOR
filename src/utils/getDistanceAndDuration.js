@@ -11,7 +11,6 @@ const getDistanceAndDuration = async (origin, destination) => {
     },
     headers: {},
   });
-  // console.log(data.data.routes[0].sections[0].summary);
   return data.data.routes[0].sections[0].summary;
 };
 

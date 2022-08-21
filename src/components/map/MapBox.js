@@ -1,12 +1,24 @@
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { removeCookies } from "cookies-next";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ReactMapGL, { Layer, Marker, Source } from "react-map-gl";
+import { toast } from "react-toastify";
+import getPrice from "src/api/trip/getPrice";
 import getDistanceAndDuration from "src/utils/getDistanceAndDuration";
 import getGeometies from "src/utils/getGeometries";
 import getLocationName from "src/utils/getLocationName";
 
-const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setDestination }) => {
+const MapBox = ({
+  origin,
+  destination,
+  setDistance,
+  setDuration,
+  setPrice,
+  setOrigin,
+  setDestination,
+}) => {
   const [dataOne, setDataOne] = useState();
   const mapRef = useRef();
   const [viewport, setViewport] = useState({
@@ -16,6 +28,8 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
     longitude: 108,
     zoom: 13,
   });
+
+  const router = useRouter();
 
   const onLoad = async () => {
     if (origin && destination) {
@@ -33,6 +47,21 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
       );
 
       const geometries = await getGeometies(origin.coordinates, destination.coordinates);
+      const price = await getPrice(durationAndDisTance.length);
+
+      // check auth
+
+      if (price == null) {
+        toast(<ToastCustomize title="Fetching Price Error" content="Check Intenet Connection" />);
+      } else if (price?.status === 403) {
+        toast(<ToastCustomize title="Authentication Error" content={price?.data?.message} />);
+        removeCookies("token");
+        router.push("/");
+      } else if (price?.data?.message) {
+        toast(<ToastCustomize title="Fetching Price Error" content={price?.data?.message} />);
+      } else {
+        setPrice(price.cash);
+      }
 
       setDataOne({
         type: "Feature",
@@ -43,8 +72,8 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
         },
       });
 
-      setDistance((durationAndDisTance.length / 1000).toFixed(2) + " km");
-      setDuration((durationAndDisTance.duration / 60).toFixed(2) + " mins");
+      setDistance((durationAndDisTance.length / 1000).toFixed(2));
+      setDuration(durationAndDisTance.duration.toFixed(2));
     }
   };
 
@@ -84,8 +113,21 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
         );
 
         const geometries = await getGeometies(origin.coordinates, destination.coordinates);
+        const price = await getPrice(durationAndDisTance.length);
 
-        console.log(geometries);
+        // check auth
+
+        if (price == null) {
+          toast(<ToastCustomize title="Fetching Price Error" content="Check Intenet Connection" />);
+        } else if (price?.status === 403) {
+          toast(<ToastCustomize title="Authentication Error" content={price?.data?.message} />);
+          removeCookies("token");
+          router.push("/");
+        } else if (price?.data?.message) {
+          toast(<ToastCustomize title="Fetching Price Error" content={price?.data?.message} />);
+        } else {
+          setPrice(price.cash);
+        }
 
         setDataOne({
           type: "Feature",
@@ -96,8 +138,8 @@ const MapBox = ({ origin, destination, setDistance, setDuration, setOrigin, setD
           },
         });
 
-        setDistance((durationAndDisTance.length / 1000).toFixed(2) + " km");
-        setDuration((durationAndDisTance.duration / 60).toFixed(2) + " mins");
+        setDistance((durationAndDisTance.length / 1000).toFixed(2));
+        setDuration(durationAndDisTance.duration);
       };
 
       asyncFunc(origin, destination);

@@ -3,7 +3,7 @@ import { GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 
 import StripedDataGrid from "./StripedDataGrid";
 
-const CustomizedTable = ({ rows, columns }) => {
+const CustomizedTable = ({ rows, columns, paging, setPaging, totalItem }) => {
   return (
     <Card
       sx={{
@@ -12,7 +12,7 @@ const CustomizedTable = ({ rows, columns }) => {
         "& .super-app-theme--header": {
           backgroundColor: "black",
           color: "white",
-          fontWeight: "bold"
+          fontWeight: "bold",
         },
       }}
     >
@@ -20,17 +20,32 @@ const CustomizedTable = ({ rows, columns }) => {
         showCellRightBorder
         showColumnRightBorder
         scrollbarSize={0.2}
-        sx={{
-          // boxShadow: 2,
-          // border: 1,
-          // borderColor: "lightgray",
-          // borderRadius: 0
-        }}
         components={{
           Toolbar: GridToolbar,
         }}
         columns={columns}
         rows={rows}
+        page={paging.offset}
+        onPageChange={(value) => {
+          setPaging((prev) => {
+            return {
+              ...prev,
+              offset: value,
+            };
+          });
+        }}
+        onPageSizeChange={(value) => {
+          setPaging((prev) => {
+            return {
+              ...prev,
+              limit: value,
+            };
+          });
+        }}
+        rowCount={totalItem}
+        pageSize={paging.limit}
+        paginationMode="server"
+        rowsPerPageOptions={[1, 5, 10, 15, 20, 50, 100]}
         getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd")}
       />
     </Card>

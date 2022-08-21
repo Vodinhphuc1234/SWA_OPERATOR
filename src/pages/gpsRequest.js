@@ -1,150 +1,21 @@
 import { Box, IconButton } from "@mui/material";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { DashboardLayout } from "src/components/dashboard-layout";
-import AddRequestModal from "src/components/requests/modals/add-resquest-modal";
-import GPSHandleModal from "src/components/gpsRequest/GPSHandleModal";
-import { format } from "date-fns";
 import { PhoneEnabled } from "@mui/icons-material";
 import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
-import CustomizedTable from "src/components/CustomizedTable";
-import getLatLng from "src/utils/geoLatLngFromAddress";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { useRouter } from "next/router";
+import getListTrips from "src/api/trip/getListTrips";
+import CustomizedTable from "src/components/CustomizedTable";
+import { DashboardLayout } from "src/components/dashboard-layout";
+import GPSHandleModal from "src/components/gpsRequest/GPSHandleModal";
+import AddRequestModal from "src/components/requests/modals/add-resquest-modal";
+import getLatLng from "src/utils/geoLatLngFromAddress";
 
-const gpsRequests = [
-  {
-    id: 1,
-    customerName: "Jonh Wick",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
-  },
-  {
-    id: 2,
-    customerName: "Cristino Ronaldo",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 3,
-    customerName: "Lionel Messi",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 4,
-    customerName: "Neymar Juniors",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 5,
-    customerName: "Jonh Wick",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
-  },
-  {
-    id: 6,
-    customerName: "Cristino Ronaldo",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 7,
-    customerName: "Lionel Messi",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 8,
-    customerName: "Neymar Juniors",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 9,
-    customerName: "Jonh Wick",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
-  },
-  {
-    id: 10,
-    customerName: "Cristino Ronaldo",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 11,
-    customerName: "Lionel Messi",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 12,
-    customerName: "Neymar Juniors",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 13,
-    customerName: "Jonh Wick",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "110 Nguyen thi minh khai, quan 3, ho chi minh",
-  },
-  {
-    id: 14,
-    customerName: "Cristino Ronaldo",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 15,
-    customerName: "Lionel Messi",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-  {
-    id: 16,
-    customerName: "Neymar Juniors",
-    phoneNumber: "0123456789",
-    requestTime: 1657443575000,
-    origin: "170 Bui Dinh Tuy, ward 12, Binh Thanh District, Ho Chi Minh city",
-    destination: "227 Nguyen Van Cu, ward 5, District 5, Ho Chi Minh city",
-  },
-];
-
-const Requests = ({ customers }) => {
+const Requests = ({ data }) => {
   const [openModal, setOpenModal] = useState(false);
+  const { trips, totalItem } = data;
 
   // GPS handle
   const [selectedGPSRequest, setSelectedGPSRequest] = useState(null);
@@ -154,35 +25,39 @@ const Requests = ({ customers }) => {
   const columns = [
     { field: "id", headerName: "ID", flex: 1, headerClassName: "super-app-theme--header" },
     {
-      field: "customerName",
+      field: "rider_name",
       headerName: "Customer Name",
       flex: 5,
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "phoneNumber",
+      field: "rider_phone_number",
       headerName: "Phone Number",
       flex: 5,
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "requestTime",
+      field: "date_created",
       headerName: "Request time",
-      valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
+      // valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
       flex: 5,
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "origin",
+      field: "pick_up_address_line",
       headerName: "Origin Location",
-      // valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
       flex: 10,
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "destination",
+      field: "drop_off_address_line",
       headerName: "Destination",
-      // valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
+      flex: 10,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "self",
+      headerName: "URL",
       flex: 10,
       headerClassName: "super-app-theme--header",
     },
@@ -207,15 +82,15 @@ const Requests = ({ customers }) => {
       renderCell: (params) => {
         const onClick = async () => {
           //get ret
-          const originLatLng = await getLatLng(params.row.origin);
-          const destinationLatLng = await getLatLng(params.row.destination);
+          const originLatLng = await getLatLng(params.row["pick_up_address_line"]);
+          const destinationLatLng = await getLatLng(params.row["drop_off_address_line"]);
 
           setSelectedGPSRequest({
             id: params.row.id,
-            customerName: params.row.customerName,
-            phoneNumber: params.row.phoneNumber,
+            customerName: params.row["rider_name"],
+            phoneNumber: params.row["rider_phone_number"],
             origin: {
-              description: params.row.origin,
+              description: params.row["pick_up_address_line"],
               coordinates: {
                 lat: originLatLng.Latitude,
                 lng: originLatLng.Longitude,
@@ -223,12 +98,13 @@ const Requests = ({ customers }) => {
             },
 
             destination: {
-              description: params.row.destination,
+              description: params.row["drop_off_address_line"],
               coordinates: {
                 lat: destinationLatLng.Latitude,
                 lng: destinationLatLng.Longitude,
               },
             },
+            url: params.row.self,
           });
           setOpenGPSModal(true);
         };
@@ -246,6 +122,17 @@ const Requests = ({ customers }) => {
     },
   ];
 
+  const router = useRouter();
+  const [paging, setPaging] = useState({ limit: 20, offset: 0 });
+  useEffect(() => {
+    console.log(paging);
+    router.query.limit = paging.limit;
+    router.query.offset = paging.offset;
+    router.push(router);
+  }, [paging]);
+
+  // const { trips, totalItem } = data;
+
   return (
     <>
       <Head>
@@ -260,11 +147,11 @@ const Requests = ({ customers }) => {
       >
         <Box sx={{ height: "88vh", width: "100%" }}>
           <CustomizedTable
-            rows={gpsRequests}
+            paging={paging}
+            setPaging={setPaging}
+            rows={trips}
             columns={columns}
-            onSelectionChange={(newSelection) => {
-              console.log(newSelection);
-            }}
+            totalItem={totalItem}
           />
         </Box>
       </Box>
@@ -277,6 +164,48 @@ const Requests = ({ customers }) => {
       <GPSHandleModal open={openGPSModal} setOpen={setOpenGPSModal} request={selectedGPSRequest} />
     </>
   );
+};
+
+export const getServerSideProps = async ({ query, req, res }) => {
+  var result = {};
+  let { offset, limit } = query;
+
+  const data = await getListTrips(
+    {
+      params: {
+        offset,
+        limit,
+        pick_up_address_coordinates_is_null: true,
+        drop_off_address_coordinates_is_null: true,
+        with_count: true,
+      },
+    },
+    { req, res }
+  );
+
+  console.log(data);
+
+  if (data == null) {
+    result.error = "Check your internet";
+  } else if (data?.data?.message) {
+    result.error = data.data.message;
+  } else {
+    var id = 1;
+    data.results.forEach((item) => {
+      item.id = id++;
+    });
+
+    result = {
+      totalItem: data.count,
+      trips: data.results,
+    };
+  }
+
+  return {
+    props: {
+      data: result,
+    },
+  };
 };
 
 Requests.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;

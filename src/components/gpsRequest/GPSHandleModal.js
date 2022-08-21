@@ -1,36 +1,51 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Divider,
-  Fade,
-  Grid,
-  IconButton,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import DoNotDisturbOnSharpIcon from "@mui/icons-material/DoNotDisturbOnSharp";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
+import DoNotDisturbOnSharpIcon from "@mui/icons-material/DoNotDisturbOnSharp";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { geocodeByPlaceId, getLatLng } from "react-places-autocomplete";
-import SimpleMap from "../map";
-import MapBox from "../map/MapBox";
-import { getPlaceSuggests } from "src/utils/getPlaceSuggestions";
+import { LoadingButton } from "@mui/lab";
+import { Box, Divider, Fade, Grid, IconButton, Modal, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import updateTrip from "src/api/trip/updateTrip";
 import CustomizedAutoComplete from "../CustomizedAutoComplete";
+import MapBox from "../map/MapBox";
+import ToastCustomize from "../toast";
+// import ToastCustomize from "src/components/toast";
 
 const GPSHandleModal = ({ open, setOpen, request }) => {
+  //state
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
+  const [loading, setLoading] = useState(false);
+  const url = request?.url ? request.url : "";
+  const router = useRouter();
   //handle auto complete
   const handleCloseModal = () => {
     setOrigin(null);
     setDestination(null);
     setOpen(false);
+    setLoading(false);
   };
 
-  const [origin, setOrigin] = useState();
-  const [destination, setDestination] = useState();
+  const handleUpadteTrip = async () => {
+    setLoading(true);
+    const data = await updateTrip(url, origin, destination, distance, duration);
+    setLoading(false);
+
+    if (data == null) {
+      toast(<ToastCustomize title="Update GPS ERR" content="Check Intenet Connection" />);
+    } else if (data?.status === 403) {
+      toast(<ToastCustomize title="Authentication Error" content={data?.data?.message} />);
+      removeCookies("token");
+      router.push("/");
+    } else if (data?.data?.message) {
+      toast(<ToastCustomize title="Update GPS ERR" content={data?.data?.message} />);
+    } else {
+      toast(<ToastCustomize title="Notification" content="Successfully" />);
+      setOpen(false);
+      router.reload();
+    }
+  };
 
   useEffect(() => {
     setOrigin({ ...request?.origin });
@@ -44,6 +59,7 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
   //distance and duration computing
   const [distance, setDistance] = useState();
   const [duration, setDuration] = useState();
+  const [price, setPrice] = useState();
 
   return (
     <Modal
@@ -79,7 +95,7 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
             }}
           >
             <Typography variant="h5" sx={{ textAlign: "center", flexGrow: 1 }}>
-              Add Request
+              Handle GPS Request
             </Typography>
             <IconButton onClick={handleCloseModal}>
               <DoNotDisturbOnSharpIcon />
@@ -127,7 +143,7 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
                   left: 20,
                   padding: "10px",
                   borderRadius: "10px",
-                  width: "400px ",
+                  width: "600px ",
                   borderWidth: "1px",
                   borderColor: "black",
                   borderStyle: "solid",
@@ -151,22 +167,28 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
                   </Grid>
                   <Grid item lg={12} md={12} xs={12}>
                     <Grid container>
-                      <Grid item lg={6} md={6} xs={12}>
+                      <Grid item lg={4} md={4} xs={12}>
                         <Typography variant="h6" component="span">
                           Duration:
                         </Typography>
                         <Typography variant="p" component="span">
-                          {" "}
-                          {duration}
+                          {duration} seconds
                         </Typography>
                       </Grid>
-                      <Grid item lg={6} md={6} xs={12}>
+                      <Grid item lg={4} md={4} xs={12}>
                         <Typography variant="h6" component="span">
                           Distance:
                         </Typography>
                         <Typography variant="p" component="span">
-                          {" "}
-                          {distance}
+                          {distance} km
+                        </Typography>
+                      </Grid>
+                      <Grid item lg={4} md={4} xs={12}>
+                        <Typography variant="h6" component="span">
+                          Price:
+                        </Typography>
+                        <Typography variant="p" component="span">
+                          {price} VNĐ
                         </Typography>
                       </Grid>
                     </Grid>
@@ -174,19 +196,12 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
                 </Grid>
               </Box>
             </Fade>
-            {/* <SimpleMap
-              origin={origin}
-              destination={destination}
-              setDistance={setDistance}
-              setDuration={setDuration}
-              setDestination = {setDestination}
-              setOrigin = {setOrigin}
-            /> */}
             <MapBox
               origin={origin}
               destination={destination}
               setDistance={setDistance}
               setDuration={setDuration}
+              setPrice={setPrice}
               setDestination={setDestination}
               setOrigin={setOrigin}
             />
@@ -198,7 +213,14 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
               justifyContent: "center",
             }}
           >
-            <Button variant="contained">Submit</Button>
+            <LoadingButton
+              loading={loading}
+              disabled={loading}
+              variant="contained"
+              onClick={handleUpadteTrip}
+            >
+              Update Trip GPS
+            </LoadingButton>
           </Box>
         </Box>
       </>

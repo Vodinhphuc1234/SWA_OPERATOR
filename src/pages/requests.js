@@ -1,65 +1,82 @@
 import { PhoneEnabled } from "@mui/icons-material";
-import PhoneDisabled from "@mui/icons-material/PhoneDisabled";
-import { Box, IconButton } from "@mui/material";
-import { format } from "date-fns";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Head from "next/head";
-import { useState } from "react";
-import getAllUsers from "src/api/getAllUser";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import getListTrips from "src/api/trip/getListTrips";
 import CustomizedTable from "src/components/CustomizedTable";
 import { DashboardLayout } from "src/components/dashboard-layout";
-import AddRequestModal from "src/components/requests/modals/add-resquest-modal";
 
-const requests = [
-  {
-    id: 1,
-    customerName: "Jonh Wick",
-    phoneNumber: "0123456789",
-    requestTime: 1657770338000,
-  },
-  {
-    id: 2,
-    customerName: "Cristino Ronaldo",
-    phoneNumber: "0123456789",
-    requestTime: 1657770338000,
-  },
-  {
-    id: 3,
-    customerName: "Lionel Messi",
-    phoneNumber: "0123456789",
-    requestTime: 1657770338000,
-  },
-  {
-    id: 4,
-    customerName: "Neymar Juniors",
-    phoneNumber: "0123456789",
-    requestTime: 1657770338000,
-  },
-];
-
+const color = {
+  canceled: "red",
+  processing: "#EFF54B",
+  complete: "green",
+  canceled_by_driver: "red",
+  pick_up: "blue",
+};
 const columns = [
   { field: "id", headerName: "ID", flex: 0.5, headerClassName: "super-app-theme--header" },
   {
-    field: "customerName",
+    field: "rider_name",
     headerName: "Customer Name",
     flex: 1,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "phoneNumber",
+    field: "rider_phone_number",
     headerName: "Phone Number",
     flex: 1,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "requestTime",
+    field: "date_created",
     headerName: "Request time",
-    valueFormatter: ({ value }) => `${format(value, "dd/MM/yyyy HH:mm:ss")}`,
     flex: 1,
     headerClassName: "super-app-theme--header",
   },
   {
+    field: "pick_up_address_line",
+    headerName: "Origin",
+    flex: 1,
+    headerClassName: "super-app-theme--header",
+  },
+  {
+    field: "drop_off_address_line",
+    headerName: "Destination",
+    flex: 1,
+    headerClassName: "super-app-theme--header",
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    headerClassName: "super-app-theme--header",
+    renderCell: (params) => {
+      return (
+        <Typography
+          color="white"
+          display="inline"
+          sx={{
+            borderStyle: "solid",
+            backgroundColor: color[params.value],
+            borderWidth: "1px",
+            py: "1px",
+            px: "3px",
+            borderRadius: "20px",
+            fontSize: 12,
+            paddingX: 1,
+            fontWeight: "500",
+          }}
+          variant="body2"
+        >
+          {params.value}
+        </Typography>
+      );
+    },
+  },
+  {
     field: "this",
-    headerName: "Answer",
+    headerName: "ReCall",
     headerClassName: "super-app-theme--header",
     renderCell: () => {
       return (
@@ -69,29 +86,38 @@ const columns = [
       );
     },
   },
-  {
-    field: "that",
-    headerName: "Reject",
-    headerClassName: "super-app-theme--header",
-    renderCell: () => {
-      const onClick = (e) => {
-        e.stopPropagation();
-        console.log("hello");
-      };
-      return (
-        <IconButton
-          sx={{ borderStyle: "solid", borderWidth: "1px", borderColor: "red" }}
-          onClick={onClick}
-        >
-          <PhoneDisabled sx={{ color: "red" }} />
-        </IconButton>
-      );
-    },
-  },
 ];
 
-const Requests = ({ customers }) => {
-  const [openModal, setOpenModal] = useState(false);
+const Requests = ({ data }) => {
+  const router = useRouter();
+  const [paging, setPaging] = useState({ limit: 20, offset: 0 });
+  useEffect(() => {
+    console.log(paging);
+    router.query.limit = paging.limit;
+    router.query.offset = paging.offset;
+    router.push(router);
+  }, [paging]);
+
+  const { trips, totalItem } = data;
+
+  useEffect(() => {
+    if (data?.error) {
+      toast(
+        <Box p={2}>
+          <Grid container>
+            <Grid item lg={12} md={12} xs={12}>
+              <Typography variant="h6" color={"black"} component="div">
+                Data Fetching Error
+              </Typography>
+              <Typography variant="p" component="div">
+                {data.error}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      );
+    }
+  }, [data]);
 
   return (
     <>
@@ -106,35 +132,53 @@ const Requests = ({ customers }) => {
         }}
       >
         <Box sx={{ height: "91vh", width: "100%" }}>
-          <CustomizedTable rows={requests} columns={columns} />
+          <CustomizedTable
+            paging={paging}
+            setPaging={setPaging}
+            rows={trips}
+            columns={columns}
+            totalItem={totalItem}
+          />
         </Box>
       </Box>
-
-      <AddRequestModal
-        openModal={openModal}
-        handleCloseModal={() => {
-          setOpenModal(false);
-        }}
-      />
     </>
   );
 };
 
-export const getServerSideProps = async ({ query }) => {
-  let { _page, _limit } = query;
+export const getServerSideProps = async ({ query, req, res }) => {
+  var result = {};
+  let { offset, limit } = query;
 
-  let customers = await getAllUsers({
-    params: {
-      _page,
-      _limit,
+  const data = await getListTrips(
+    {
+      params: {
+        offset,
+        limit,
+        with_count: true,
+      },
     },
-  });
+    { req, res }
+  );
 
-  console.log(customers.data);
+  if (data == null) {
+    result.error = "Check your internet";
+  } else if (data?.data?.message) {
+    result.error = data.data.message;
+  } else {
+    var id = 1;
+    data.results.forEach((item) => {
+      item.id = id++;
+    });
+
+    result = {
+      totalItem: data.count,
+      trips: data.results,
+    };
+  }
 
   return {
     props: {
-      customers: customers.data,
+      data: result,
     },
   };
 };
