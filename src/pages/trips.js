@@ -1,6 +1,8 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Grid } from "@mui/material";
+import { removeCookies } from "cookies-next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import getListTrips from "src/api/trip/getListTrips";
@@ -14,13 +16,14 @@ const Trips = () => {
 
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const asyncFunc = async () => {
       setLoading(true);
 
       const data = await getListTrips({
         params: {
-          offset,
+          offset: offset * 30,
           limit: 30,
           with_count: true,
         },
@@ -28,8 +31,11 @@ const Trips = () => {
 
       if (data == null) {
         toast(<ToastCustomize title="Network ERR" content="Check network connection" />);
-      } else if (data?.data?.message) {
-        toast(<ToastCustomize title="Fetching data err" content={data.data.message} />);
+      } else if (data?.status === 403) {
+        router.push("/403");
+      } else if (data?.status === 401) {
+        removeCookies("token");
+        router.push("/");
       } else {
         setTrips((prev) => [...prev, ...data.results]);
       }

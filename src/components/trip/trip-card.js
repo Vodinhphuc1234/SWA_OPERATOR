@@ -11,6 +11,7 @@ const color = {
   complete: "green",
   canceled_by_driver: "red",
   pick_up: "blue",
+  assigned: "#EFF54B"
 };
 
 export const TripCard = ({ trip, ...rest }) => (

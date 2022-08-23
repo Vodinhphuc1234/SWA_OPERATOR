@@ -12,8 +12,19 @@ import { DashboardLayout } from "src/components/dashboard-layout";
 import GPSHandleModal from "src/components/gpsRequest/GPSHandleModal";
 import AddRequestModal from "src/components/requests/modals/add-resquest-modal";
 import getLatLng from "src/utils/geoLatLngFromAddress";
+import { removeCookies } from "cookies-next";
 
 const Requests = ({ data }) => {
+  const router = useRouter();
+  useEffect(() => {
+    if (data?.error === 401) {
+      removeCookies("token");
+      router.push("/");
+    } else if (data?.error === 403) {
+      router.push("/403");
+    }
+  }, [data]);
+
   const [openModal, setOpenModal] = useState(false);
   const { trips, totalItem } = data;
 
@@ -122,7 +133,6 @@ const Requests = ({ data }) => {
     },
   ];
 
-  const router = useRouter();
   const [paging, setPaging] = useState({ limit: 20, offset: 0 });
   useEffect(() => {
     console.log(paging);
@@ -173,7 +183,7 @@ export const getServerSideProps = async ({ query, req, res }) => {
   const data = await getListTrips(
     {
       params: {
-        offset,
+        offset: offset*limit,
         limit,
         pick_up_address_coordinates_is_null: true,
         drop_off_address_coordinates_is_null: true,
@@ -183,12 +193,28 @@ export const getServerSideProps = async ({ query, req, res }) => {
     { req, res }
   );
 
-  console.log(data);
+  console.log(data.status);
 
   if (data == null) {
     result.error = "Check your internet";
-  } else if (data?.data?.message) {
-    result.error = data.data.message;
+  } else if (data?.status === 403) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/403",
+      },
+    };
+  } else if (data?.status === 401) {
+    res.setHeader("Set-Cookie", [
+      `token=deleted; Max-Age=0`,
+      `AnotherCookieName=deleted; Max-Age=0`,
+    ]);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
   } else {
     var id = 1;
     data.results.forEach((item) => {

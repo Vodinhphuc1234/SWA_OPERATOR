@@ -34,10 +34,12 @@ const GPSHandleModal = ({ open, setOpen, request }) => {
 
     if (data == null) {
       toast(<ToastCustomize title="Update GPS ERR" content="Check Intenet Connection" />);
-    } else if (data?.status === 403) {
+    } else if (data?.status === 401) {
       toast(<ToastCustomize title="Authentication Error" content={data?.data?.message} />);
       removeCookies("token");
       router.push("/");
+    } else if (data?.status === 403) {
+      router.push("/403");
     } else if (data?.data?.message) {
       toast(<ToastCustomize title="Update GPS ERR" content={data?.data?.message} />);
     } else {

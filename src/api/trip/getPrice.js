@@ -10,8 +10,8 @@ const getPrice = async (distance) => {
 
     data = ret.data;
   } catch (e) {
-    if (e.reponse) {
-      data = e.reponse;
+    if (e.response) {
+      data = e.response;
     } else {
       data = null;
     }

@@ -7,7 +7,7 @@ const NotFound = () => (
   <>
     <Head>
       <title>
-        404
+        403
       </title>
     </Head>
     <Box
@@ -32,7 +32,7 @@ const NotFound = () => (
             color="textPrimary"
             variant="h1"
           >
-            404: The page you are looking for isn’t here
+            403: You dont have permisson
           </Typography>
           <Typography
             align="center"

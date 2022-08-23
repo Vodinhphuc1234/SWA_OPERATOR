@@ -9,11 +9,11 @@ export const navSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      state = action.payload;
+      state.user = action.payload;
     },
   },
 });
 
 export const { setUser } = navSlice.actions;
-export const selectUser = (state) => state.nav.user;
+export const selectUser = (state) => state.user;
 export default navSlice.reducer;

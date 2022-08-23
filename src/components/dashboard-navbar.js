@@ -1,6 +1,16 @@
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { Users as UsersIcon } from "../icons/users";
@@ -9,6 +19,8 @@ import { removeCookies } from "cookies-next";
 import { useRouter } from "next/router";
 import AccountMenu from "./account/accountMenu";
 import NotificationMenu from "./NotificationMenu";
+import { useSelector } from "react-redux";
+import { selectUser } from "src/slices/navSlice";
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -17,6 +29,9 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 
 export const DashboardNavbar = (props) => {
   const { onSidebarOpen, ...other } = props;
+  const user = useSelector(selectUser);
+
+  console.log(user);
 
   const router = useRouter();
   const handleLogout = () => {
@@ -60,9 +75,13 @@ export const DashboardNavbar = (props) => {
               <SearchIcon fontSize="small" />
             </IconButton>
           </Tooltip>
+
           <Box sx={{ flexGrow: 1 }} />
 
-          <Tooltip title="Contacts">
+          <Tooltip title="Search">
+            <Button></Button>
+          </Tooltip>
+          <Tooltip title="Contact">
             <IconButton sx={{ ml: 1 }}>
               <UsersIcon fontSize="small" />
             </IconButton>

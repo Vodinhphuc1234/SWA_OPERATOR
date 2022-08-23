@@ -53,10 +53,12 @@ const MapBox = ({
 
       if (price == null) {
         toast(<ToastCustomize title="Fetching Price Error" content="Check Intenet Connection" />);
-      } else if (price?.status === 403) {
+      } else if (price?.status === 401) {
         toast(<ToastCustomize title="Authentication Error" content={price?.data?.message} />);
         removeCookies("token");
         router.push("/");
+      } else if (price?.status === 403) {
+        router.push("/403");
       } else if (price?.data?.message) {
         toast(<ToastCustomize title="Fetching Price Error" content={price?.data?.message} />);
       } else {
@@ -119,10 +121,12 @@ const MapBox = ({
 
         if (price == null) {
           toast(<ToastCustomize title="Fetching Price Error" content="Check Intenet Connection" />);
-        } else if (price?.status === 403) {
+        } else if (price?.status === 401) {
           toast(<ToastCustomize title="Authentication Error" content={price?.data?.message} />);
           removeCookies("token");
           router.push("/");
+        } else if (price?.status === 403) {
+          router.push("/403");
         } else if (price?.data?.message) {
           toast(<ToastCustomize title="Fetching Price Error" content={price?.data?.message} />);
         } else {

@@ -7,7 +7,9 @@ import Head from "next/head";
 import NextLink from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import login from "src/api/auth/login";
+import { setUser } from "src/slices/navSlice";
 import * as Yup from "yup";
 import { Facebook as FacebookIcon } from "../icons/facebook";
 import { Google as GoogleIcon } from "../icons/google";
@@ -24,6 +26,7 @@ const Login = () => {
   // })
 
   //handle submit
+  const dispatch = useDispatch();
   const onSubmit = async (user) => {
     setLogging(true);
     const data = await login(user);
@@ -32,6 +35,12 @@ const Login = () => {
       setMessage(data.data.message);
     } else {
       console.log(data);
+      dispatch(
+        setUser({
+          ...user,
+        })
+      );
+      console.log(user);
       setCookies("token", data.token);
       window.location.href = "";
     }

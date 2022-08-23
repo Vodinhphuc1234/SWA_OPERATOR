@@ -1,12 +1,15 @@
 import { PhoneEnabled } from "@mui/icons-material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { removeCookies } from "cookies-next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import getListTrips from "src/api/trip/getListTrips";
 import CustomizedTable from "src/components/CustomizedTable";
 import { DashboardLayout } from "src/components/dashboard-layout";
+import { selectUser } from "src/slices/navSlice";
 
 const color = {
   canceled: "red",
@@ -14,6 +17,7 @@ const color = {
   complete: "green",
   canceled_by_driver: "red",
   pick_up: "blue",
+  assigned: "#EFF54B",
 };
 const columns = [
   { field: "id", headerName: "ID", flex: 0.5, headerClassName: "super-app-theme--header" },
@@ -90,6 +94,17 @@ const columns = [
 
 const Requests = ({ data }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    console.log(data);
+    if (data?.error === 401) {
+      removeCookies("token");
+      router.push("/");
+    } else if (data?.error === 403) {
+      router.push("/403");
+    }
+  }, [data]);
+
   const [paging, setPaging] = useState({ limit: 20, offset: 0 });
   useEffect(() => {
     console.log(paging);
@@ -118,6 +133,8 @@ const Requests = ({ data }) => {
       );
     }
   }, [data]);
+
+  console.log(useSelector(selectUser));
 
   return (
     <>
@@ -152,7 +169,7 @@ export const getServerSideProps = async ({ query, req, res }) => {
   const data = await getListTrips(
     {
       params: {
-        offset,
+        offset: offset * limit,
         limit,
         with_count: true,
       },
@@ -162,8 +179,24 @@ export const getServerSideProps = async ({ query, req, res }) => {
 
   if (data == null) {
     result.error = "Check your internet";
-  } else if (data?.data?.message) {
-    result.error = data.data.message;
+  } else if (data?.status === 403) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/403",
+      },
+    };
+  } else if (data?.status === 401) {
+    res.setHeader("Set-Cookie", [
+      `token=deleted; Max-Age=0`,
+      `AnotherCookieName=deleted; Max-Age=0`,
+    ]);
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
   } else {
     var id = 1;
     data.results.forEach((item) => {
